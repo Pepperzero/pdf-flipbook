@@ -13,6 +13,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
   height: var(--sfb-height);
   overflow: hidden;
   background: var(--sfb-bg);
@@ -24,19 +26,20 @@
 }
 .sfb *, .sfb *::before, .sfb *::after { box-sizing: border-box; }
 .sfb:fullscreen { --sfb-height: 100vh; }
+/* Webflow Code Embed wrapper: always take the full row, even inside flex/grid parents */
+.w-embed:has(> .sfb) { width: 100%; min-width: 0; flex: 1 1 100%; align-self: stretch; }
+/* site-wide button focus styles shouldn't show on mouse clicks */
+.sfb button:focus:not(:focus-visible) { outline: none; box-shadow: none; }
 
 /* ---------- Stage & book ---------- */
 .sfb-stage {
   position: relative;
   flex: 1;
   min-height: 0;
-  display: grid;
-  place-items: center;
-  padding: 28px 84px;
+  overflow: hidden;
 }
-.sfb.is-portrait .sfb-stage { padding: 14px; }
 
-.sfb-box { position: relative; }
+.sfb-box { position: absolute; }
 .sfb-book { width: 100%; height: 100%; opacity: 0; transition: opacity 0.4s ease; }
 .sfb.is-ready .sfb-book { opacity: 1; }
 /* StPageFlip base styles (from stPageFlip.css) + size override */

@@ -176,8 +176,13 @@ class Flipbook {
       this.root.querySelectorAll('.sfb-fs').forEach((b) => (b.innerHTML = on ? ICON.shrink : ICON.expand));
     });
 
-    this.dragScroll(this.zoomScroll);
-    this.dragScroll(this.thumbGrid);
+    // Smooth-scroll libraries common on Webflow sites (Lenis, Locomotive…) take over
+    // the mouse wheel on the whole page; keep wheel scrolling inside our own panels.
+    [this.thumbGrid, this.zoomScroll].forEach((el) => {
+      el.setAttribute('data-lenis-prevent', '');
+      el.addEventListener('wheel', (e) => e.stopPropagation(), { passive: true });
+      this.dragScroll(el);
+    });
   }
 
   /* ---------- Loading ---------- */
@@ -247,16 +252,22 @@ class Flipbook {
   // Size the book box so the pages fit the stage in both width and height.
   // StPageFlip then fills the box (its "stretch" mode only fits width).
   layout() {
-    const cs = getComputedStyle(this.stage);
-    const W = this.stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    const H = this.stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-    let pw = Math.min(W / 2, H * this.ratio);
+    const SW = this.stage.clientWidth;
+    const SH = this.stage.clientHeight;
+    // margins around the book: room for the side arrows in spreads, small on phones
+    let pw = Math.min((SW - 2 * 84) / 2, (SH - 2 * 28) * this.ratio);
     const landscape = pw >= MIN_PAGE_W;
-    if (!landscape) pw = Math.min(W, H * this.ratio);
+    if (!landscape) pw = Math.min(SW - 2 * 14, (SH - 2 * 14) * this.ratio);
     pw = Math.max(1, Math.floor(pw));
+    const bw = landscape ? pw * 2 : pw;
+    const bh = Math.floor(pw / this.ratio);
     this.pageW = pw;
-    this.box.style.width = `${landscape ? pw * 2 : pw}px`;
-    this.box.style.height = `${Math.floor(pw / this.ratio)}px`;
+    // The box is absolutely positioned so its size never feeds back into the
+    // width of the page container (which made it grow in shrink-to-fit parents).
+    this.box.style.width = `${bw}px`;
+    this.box.style.height = `${bh}px`;
+    this.box.style.left = `${Math.round((SW - bw) / 2)}px`;
+    this.box.style.top = `${Math.round((SH - bh) / 2)}px`;
     this.root.classList.toggle('is-portrait', !landscape);
   }
 
