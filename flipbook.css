@@ -194,7 +194,9 @@
   align-content: start;
   gap: 18px 14px;
   padding: 18px;
+  touch-action: pan-y;
 }
+.sfb-thumbs__grid.is-dragging, .sfb-thumbs__grid.is-dragging .sfb-thumb { cursor: grabbing; }
 .sfb-thumb {
   display: grid;
   gap: 6px;

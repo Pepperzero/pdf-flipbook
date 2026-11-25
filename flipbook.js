@@ -176,7 +176,8 @@ class Flipbook {
       this.root.querySelectorAll('.sfb-fs').forEach((b) => (b.innerHTML = on ? ICON.shrink : ICON.expand));
     });
 
-    this.enableDragPan();
+    this.dragScroll(this.zoomScroll);
+    this.dragScroll(this.thumbGrid);
   }
 
   /* ---------- Loading ---------- */
@@ -447,23 +448,35 @@ class Flipbook {
     }, 120);
   }
 
-  enableDragPan() {
-    const sc = this.zoomScroll;
+  // Mouse drag-to-scroll (touch already scrolls natively). A drag past a few
+  // pixels swallows the click that follows, so it doesn't open a thumbnail.
+  dragScroll(sc) {
     let start = null;
+    let moved = false;
     sc.addEventListener('pointerdown', (e) => {
-      if (e.pointerType !== 'mouse') return;
-      start = { x: e.clientX, y: e.clientY, l: sc.scrollLeft, t: sc.scrollTop };
-      sc.setPointerCapture(e.pointerId);
-      sc.classList.add('is-dragging');
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      start = { x: e.clientX, y: e.clientY, l: sc.scrollLeft, t: sc.scrollTop, id: e.pointerId };
+      moved = false;
     });
     sc.addEventListener('pointermove', (e) => {
       if (!start) return;
-      sc.scrollLeft = start.l - (e.clientX - start.x);
-      sc.scrollTop = start.t - (e.clientY - start.y);
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      if (!moved) {
+        if (Math.hypot(dx, dy) < 6) return;
+        moved = true;
+        sc.setPointerCapture(start.id);
+        sc.classList.add('is-dragging');
+      }
+      sc.scrollLeft = start.l - dx;
+      sc.scrollTop = start.t - dy;
     });
     const end = () => { start = null; sc.classList.remove('is-dragging'); };
     sc.addEventListener('pointerup', end);
     sc.addEventListener('pointercancel', end);
+    sc.addEventListener('click', (e) => {
+      if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; }
+    }, true);
   }
 
   /* ---------- Misc ---------- */

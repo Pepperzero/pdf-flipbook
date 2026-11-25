@@ -33,10 +33,10 @@ Each item lives at `dominio.it/pubblicazioni/<slug>`.
 ### Code Embed content
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Pepperzero/pdf-flipbook@1.0.0/flipbook.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Pepperzero/pdf-flipbook@1.0.1/flipbook.min.css">
 <div data-flipbook data-pdf="{{PDF}}" data-title="{{Name}}"
      style="--sfb-height: calc(100dvh - 64px)"></div>
-<script type="module" src="https://cdn.jsdelivr.net/gh/Pepperzero/pdf-flipbook@1.0.0/flipbook.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/Pepperzero/pdf-flipbook@1.0.1/flipbook.min.js"></script>
 ```
 
 `{{PDF}}` / `{{Name}}` = use "+ Add field" in the embed editor to insert the CMS fields.
@@ -48,8 +48,8 @@ Each item lives at `dominio.it/pubblicazioni/<slug>`.
 ## 3. Hosting flipbook.js / flipbook.css
 
 The files are served from this repo by jsDelivr (free CDN; jsDelivr generates the `.min` versions itself).
-The URL is pinned to the git tag `v1.0.0`, so changes pushed here don't reach the live site until you tag
-a new version (e.g. `v1.1.0`) and update the two URLs in the embed.
+The URL is pinned to the git tag `v1.0.1`, so changes pushed here don't reach the live site until you tag
+a new version (e.g. `v1.0.2`) and update the two URLs in the embed.
 Alternative: paste the CSS in `<style>` and the JS in `<script type="module">` in the template page's custom code
 (no external repo, but harder to update and close to Webflow's custom-code length limits).
 
