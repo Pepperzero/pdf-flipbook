@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flipbook demo</title>
+  <link rel="stylesheet" href="flipbook.css">
+  <style>
+    /* Stand-in for the Webflow template page: slim header + viewer */
+    body { margin: 0; background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif; color: #1e2522; }
+    .site-head { height: 60px; display: flex; align-items: center; gap: 16px; padding: 0 20px; border-bottom: 1px solid rgba(30,37,34,.1); }
+    .site-head__logo { font-weight: 700; letter-spacing: .02em; }
+    .site-head__title { font-size: 14px; color: #6c726e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .publication-viewer { --sfb-height: calc(100dvh - 60px); }
+  </style>
+</head>
+<body>
+  <header class="site-head">
+    <span class="site-head__logo">LOGO</span>
+    <span class="site-head__title"></span>
+  </header>
+
+  <!-- In Webflow, data-pdf / data-title come from the CMS fields -->
+  <div class="publication-viewer" data-flipbook></div>
+  <script>
+    // Demo only: index.html?pdf=path/to/file.pdf&title=Document%20title  (default: sample.pdf next to this page)
+    const q = new URLSearchParams(location.search);
+    const viewer = document.querySelector('[data-flipbook]');
+    viewer.dataset.pdf = q.get('pdf') || 'sample.pdf';
+    viewer.dataset.title = q.get('title') || 'Documento';
+    document.querySelector('.site-head__title').textContent = viewer.dataset.title;
+  </script>
+  <script type="module" src="flipbook.js"></script>
+</body>
+</html>
